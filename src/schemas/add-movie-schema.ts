@@ -1,14 +1,12 @@
 import z from "zod";
 
-export const addMovieSchema = z.object({
+const base = z.object({
   movieName: z
     .string()
     .min(2, {
       message: "Movie Name must be at least 2 characters.",
     })
     .max(100, { message: "Movie Name must be maximum of 100 characters." }),
-  duration: z.number({ required_error: "Duration is required" }),
-  durationFormat: z.enum(["minutes", "hours"]),
   ratings: z
     .number({ required_error: "Duration is required" })
     .min(0, {
@@ -18,3 +16,24 @@ export const addMovieSchema = z.object({
       message: "Ratings can't be greater than 10.",
     }),
 });
+
+export const addMovieSchema = z.discriminatedUnion("durationFormat", [
+  z
+    .object({
+      duration: z
+        .number({ required_error: "Duration is required" })
+        .min(1, { message: "Duration can't be less than 1" })
+        .max(720, { message: "Duration can't be greater than 720" }),
+      durationFormat: z.literal("minutes"),
+    })
+    .merge(base),
+  z
+    .object({
+      duration: z
+        .number({ required_error: "Duration is required" })
+        .min(0.1, { message: "Duration can't be less than 0.1" })
+        .max(12, { message: "Duration can't be greater than 12" }),
+      durationFormat: z.literal("hours"),
+    })
+    .merge(base),
+]);
