@@ -43,6 +43,8 @@ export const DataTable = ({ data }: { data: Movie[] }) => {
     },
   });
 
+  console.log(data);
+
   return (
     <div className="space-y-4">
       <DataTableToolbar data={data} />
@@ -57,38 +59,44 @@ export const DataTable = ({ data }: { data: Movie[] }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell className="font-medium">{row.movieName}</TableCell>
-                <TableCell>{+row.duration}</TableCell>
-                <TableCell>{+row.ratings}</TableCell>
-                <TableCell className="w-[100px]">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Pencil className="mr-2 h-4 w-4" />
-                        <span>Edit</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="focus:bg-red-100"
-                        onSelect={() => mutate(row.id)}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4 text-red-600" />
-                        <span className="text-red-600">Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data.length > 0 ? (
+              data.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">{row.movieName}</TableCell>
+                  <TableCell>{+row.duration}</TableCell>
+                  <TableCell>{+row.ratings}</TableCell>
+                  <TableCell className="w-[100px]">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          <span>Edit</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="focus:bg-red-100"
+                          onSelect={() => mutate(row.id)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4 text-red-600" />
+                          <span className="text-red-600">Delete</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <div className="flex items-center justify-center h-24 text-center">
+                No Results
+              </div>
+            )}
           </TableBody>
         </Table>
       </div>
