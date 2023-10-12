@@ -24,8 +24,19 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { addMovieSchema } from "@/schemas/add-movie-schema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { Dispatch, SetStateAction } from "react";
 
-const AddMovieForm = () => {
+const requestUrl = process.env.BACKEND_BASE_URL;
+
+const AddMovieForm = ({
+  closePopup,
+}: {
+  closePopup: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof addMovieSchema>>({
     resolver: zodResolver(addMovieSchema),
     defaultValues: {
@@ -33,8 +44,28 @@ const AddMovieForm = () => {
     },
   });
 
+  const { mutate } = useMutation({
+    mutationFn: async ({
+      movieName,
+      duration,
+      durationFormat,
+      ratings,
+    }: z.infer<typeof addMovieSchema>) => {
+      await axios.post(`${requestUrl}/api/movies`, {
+        movieName,
+        duration,
+        durationFormat,
+        ratings,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
+      closePopup((prev) => !prev);
+    },
+  });
+
   function onSubmit(values: z.infer<typeof addMovieSchema>) {
-    console.log(values);
+    mutate(values);
   }
 
   return (
@@ -125,6 +156,9 @@ const AddMovieForm = () => {
         </div>
 
         <DialogFooter>
+          <Button variant="outline" onClick={() => closePopup((prev) => !prev)}>
+            Cancel
+          </Button>
           <Button type="submit">Save Movie</Button>
         </DialogFooter>
       </form>
