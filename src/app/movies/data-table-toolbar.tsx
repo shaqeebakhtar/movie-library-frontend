@@ -12,8 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Movie } from "./data-table";
+import { Dispatch, SetStateAction } from "react";
 
-export const DataTableToolbar = ({ data }: { data: Movie[] }) => {
+export const DataTableToolbar = ({
+  data,
+  onSearch,
+}: {
+  data: Movie[];
+  onSearch: Dispatch<SetStateAction<string>>;
+}) => {
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -35,6 +42,7 @@ export const DataTableToolbar = ({ data }: { data: Movie[] }) => {
         <Input
           placeholder="Search movies..."
           className="h-8 w-[150px] lg:w-[250px]"
+          onChange={(e) => onSearch(e.target.value)}
         />
       </div>
       <DropdownMenu>

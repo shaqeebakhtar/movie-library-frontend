@@ -20,6 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { DataTableToolbar } from "./data-table-toolbar";
+import { Dispatch, SetStateAction } from "react";
 
 export type Movie = {
   id: string;
@@ -31,7 +32,13 @@ export type Movie = {
 
 const requestUrl = process.env.BACKEND_BASE_URL;
 
-export const DataTable = ({ data }: { data: Movie[] }) => {
+export const DataTable = ({
+  data,
+  onSearch,
+}: {
+  data: Movie[];
+  onSearch: Dispatch<SetStateAction<string>>;
+}) => {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -43,11 +50,9 @@ export const DataTable = ({ data }: { data: Movie[] }) => {
     },
   });
 
-  console.log(data);
-
   return (
     <div className="space-y-4">
-      <DataTableToolbar data={data} />
+      <DataTableToolbar data={data} onSearch={onSearch} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -64,7 +69,7 @@ export const DataTable = ({ data }: { data: Movie[] }) => {
                 <TableRow key={index}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell className="font-medium">{row.movieName}</TableCell>
-                  <TableCell>{+row.duration}</TableCell>
+                  <TableCell>{+row.duration} Hrs</TableCell>
                   <TableCell>{+row.ratings}</TableCell>
                   <TableCell className="w-[100px]">
                     <DropdownMenu>
