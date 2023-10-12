@@ -36,6 +36,8 @@ export const columns: ColumnDef<Movie>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      console.log(row.original.id);
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -1,6 +1,6 @@
 import AddMovie from "@/components/add-movie";
-import { DataTable } from "./data-table";
-import { Movie, columns } from "./columns";
+import Table from "@/components/table";
+import { Movie } from "./columns";
 
 export const data: Movie[] = [
   {
@@ -33,7 +33,7 @@ const Page = () => {
           <AddMovie />
         </div>
       </div>
-      <DataTable columns={columns} data={data} />
+      <Table />
     </div>
   );
 };

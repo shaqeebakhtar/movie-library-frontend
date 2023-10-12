@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 import { ArrowDownToLine } from "lucide-react";
+import * as XLSX from "xlsx";
 
 import {
   DropdownMenu,
@@ -14,12 +15,27 @@ import {
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  data: TData[];
 }
 
 export function DataTableToolbar<TData>({
   table,
+  data,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, "movie-list.xlsx");
+  };
+
+  const downloadText = () => {
+    var a = document.createElement("a");
+    var file = new Blob([JSON.stringify(data)], { type: "text/plain" });
+    a.href = URL.createObjectURL(file);
+    a.download = "movie-list.txt";
+    a.click();
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -37,8 +53,12 @@ export function DataTableToolbar<TData>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>Download CSV</DropdownMenuItem>
-          <DropdownMenuItem>Download TXT</DropdownMenuItem>
+          <DropdownMenuItem onSelect={downloadExcel}>
+            Download as CSV
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={downloadText}>
+            Download as TXT
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
