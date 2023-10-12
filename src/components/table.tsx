@@ -1,5 +1,4 @@
 "use client";
-import { Movie, columns } from "@/app/movies/columns";
 import { DataTable } from "@/app/movies/data-table";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -22,7 +21,7 @@ const Table = () => {
           <Loader className="animate-spin" />
         </div>
       ) : !isLoading && moviesList ? (
-        <DataTable columns={columns} data={moviesList?.data} />
+        <DataTable data={moviesList?.data} />
       ) : null}
     </>
   );

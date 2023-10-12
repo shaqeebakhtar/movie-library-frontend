@@ -1,6 +1,6 @@
 import AddMovie from "@/components/add-movie";
 import Table from "@/components/table";
-import { Movie } from "./columns";
+import { Movie } from "./data-table";
 
 export const data: Movie[] = [
   {

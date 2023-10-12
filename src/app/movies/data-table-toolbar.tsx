@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table } from "@tanstack/react-table";
 import { ArrowDownToLine } from "lucide-react";
 import * as XLSX from "xlsx";
 
@@ -12,16 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Movie } from "./data-table";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>;
-  data: TData[];
-}
-
-export function DataTableToolbar<TData>({
-  table,
-  data,
-}: DataTableToolbarProps<TData>) {
+export const DataTableToolbar = ({ data }: { data: Movie[] }) => {
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -63,4 +55,4 @@ export function DataTableToolbar<TData>({
       </DropdownMenu>
     </div>
   );
-}
+};
