@@ -9,18 +9,23 @@ const requestUrl = process.env.BACKEND_BASE_URL;
 
 const Table = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [currPage, setCurrPage] = useState<number>(0);
+
   const { data: moviesList, isLoading } = useQuery({
-    queryKey: ["movies"],
+    queryKey: ["movies", currPage],
     queryFn: async () => {
-      return await axios.get(`${requestUrl}/api/movies`);
+      return await axios.get(`${requestUrl}/api/movies/?page=${currPage}`);
     },
   });
 
-  let filteredMovies;
-  if (!isLoading && moviesList) {
-    filteredMovies = moviesList.data.filter((movie: Movie) =>
+  let filteredMovies, totalPages;
+  if (!isLoading && moviesList && moviesList.data.count) {
+    filteredMovies = moviesList.data.moviesList.filter((movie: Movie) =>
       movie.movieName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    totalPages = Math.floor(moviesList.data.count / 10);
+    console.log(totalPages);
   }
 
   return (
@@ -31,7 +36,10 @@ const Table = () => {
         </div>
       ) : !isLoading && moviesList ? (
         <DataTable
-          data={searchTerm ? filteredMovies : moviesList?.data}
+          data={searchTerm ? filteredMovies : moviesList?.data.moviesList}
+          totalPages={totalPages!}
+          setCurrPage={setCurrPage}
+          currPage={currPage}
           onSearch={setSearchTerm}
         />
       ) : null}

@@ -20,7 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { DataTableToolbar } from "./data-table-toolbar";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export type Movie = {
   id: string;
@@ -34,9 +34,15 @@ const requestUrl = process.env.BACKEND_BASE_URL;
 
 export const DataTable = ({
   data,
+  totalPages,
+  currPage,
+  setCurrPage,
   onSearch,
 }: {
   data: Movie[];
+  totalPages: number;
+  currPage: number;
+  setCurrPage: Dispatch<SetStateAction<number>>;
   onSearch: Dispatch<SetStateAction<string>>;
 }) => {
   const queryClient = useQueryClient();
@@ -67,7 +73,9 @@ export const DataTable = ({
             {data.length > 0 ? (
               data.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    {currPage * 10 + index + 1}
+                  </TableCell>
                   <TableCell className="font-medium">{row.movieName}</TableCell>
                   <TableCell>{+row.duration} Hrs</TableCell>
                   <TableCell>{+row.ratings}</TableCell>
@@ -106,10 +114,20 @@ export const DataTable = ({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={currPage === 0}
+          onClick={() => setCurrPage((prev) => prev - 1)}
+        >
           Previous
         </Button>
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={currPage === totalPages}
+          onClick={() => setCurrPage((prev) => prev + 1)}
+        >
           Next
         </Button>
       </div>
